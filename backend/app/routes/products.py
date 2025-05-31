@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, abort
 from app.models.product import Product, PriceHistory
 from sqlalchemy.exc import SQLAlchemyError
 from app.database.connection import db
+from app import cache
 
 products_bp = Blueprint('products', __name__)
 
@@ -24,6 +25,7 @@ def serialize_price_history(history):
     }
 
 @products_bp.route('/products', methods=['GET'])
+@cache.cached(timeout=60)
 def get_products():
     """
     Retorna a lista de produtos cadastrados.

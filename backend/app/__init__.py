@@ -3,8 +3,10 @@ from flask_cors import CORS
 from flasgger import Swagger  
 from app.database.connection import db
 from app.services.price_automation import init_price_automation
+from flask_caching import Cache
 
 cors = CORS()
+cache = Cache()
 
 def create_app():
     """
@@ -19,6 +21,13 @@ def create_app():
     # Configuração do banco de dados
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecommerce.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    
+    # Configuração do Cache usando Redis
+    app.config['CACHE_TYPE'] = 'RedisCache'
+    app.config['CACHE_REDIS_HOST'] = 'redis'
+    app.config['CACHE_REDIS_PORT'] = 6379
+    app.config['CACHE_REDIS_DB'] = 0
+    app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # 5 minutos
 
     # Configuração do Swagger (documentação automática da API)
     swagger_config = {
@@ -40,6 +49,7 @@ def create_app():
     # Inicialização das extensões
     db.init_app(app)
     cors.init_app(app)
+    cache.init_app(app)
 
     # Registro dos blueprints (rotas organizadas por funcionalidade)
     from app.routes.products import products_bp
