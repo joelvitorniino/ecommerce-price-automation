@@ -5,3 +5,4 @@ Flask-SQLAlchemy
 Alembic
 Celery
 redis 
+Flasgger
