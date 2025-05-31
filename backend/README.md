@@ -219,7 +219,14 @@ As principais dependências do projeto estão listadas em `requirements.txt`. Al
 
 O projeto inclui um sistema de automação de preços que atualiza os preços dos produtos em intervalos regulares (a cada 10 segundos, por padrão). Isso é configurado no módulo `app.services.price_automation`.
 
-### 12. Contribuindo
+### 12. Testes Automatizados
+
+Para realizar testes automatizados com o pytest, execute:
+```
+pytest app/tests/
+```
+
+### 13. Contribuindo
 
 Se você deseja contribuir para o projeto, siga estas etapas:
 
