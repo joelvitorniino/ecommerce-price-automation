@@ -2,7 +2,5 @@ Flask
 Flask-CORS
 SQLAlchemy
 Flask-SQLAlchemy
-Alembic
-Celery
-redis 
 Flasgger
+pytest
