@@ -1,7 +1,7 @@
 from app.models.product import Product, PriceHistory
 from app.database.connection import db
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 from threading import Thread, Event
 
 class PriceAutomation:
@@ -23,15 +23,15 @@ class PriceAutomation:
                         history = PriceHistory(
                             product_id=product.id,
                             price=new_price,
-                            timestamp=datetime.utcnow()
+                            timestamp=datetime.now(timezone.utc)
                         )
                         db.session.add(history)
 
                     db.session.commit()
-                    print(f"[{datetime.utcnow()}] Prices updated successfully.")
+                    print(f"[{datetime.now(timezone.utc)}] Prices updated successfully.")
                 except Exception as e:
                     db.session.rollback()
-                    print(f"[{datetime.utcnow()}] Error updating prices: {e}")
+                    print(f"[{datetime.now(timezone.utc)}] Error updating prices: {e}")
 
                 self._stop_event.wait(self.interval)
 

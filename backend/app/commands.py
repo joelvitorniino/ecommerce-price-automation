@@ -1,5 +1,5 @@
 import click
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import random
 from app.models.product import Product, PriceHistory
 
@@ -126,7 +126,7 @@ def generate_price_history(db):
         for product in products:
             for i in range(3):
                 price = round(product.original_price * random.uniform(0.8, 1.2), 2)
-                timestamp = datetime.utcnow() - timedelta(hours=i * 3)
+                timestamp = datetime.now(timezone.utc) - timedelta(hours=i * 3)
                 history = PriceHistory(
                     product_id=product.id,
                     price=price,

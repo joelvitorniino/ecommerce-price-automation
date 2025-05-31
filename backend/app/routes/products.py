@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, abort
 from app.models.product import Product, PriceHistory
 from sqlalchemy.exc import SQLAlchemyError
+from app.database.connection import db
 
 products_bp = Blueprint('products', __name__)
 
@@ -60,7 +61,7 @@ def get_product(id):
         description: Produto não encontrado.
     """
     try:
-        product = Product.query.get(id)
+        product = db.session.get(Product, id)
         if not product:
             abort(404, description="Produto não encontrado")
         return jsonify(serialize_product(product)), 200
@@ -88,7 +89,7 @@ def get_product_history(id):
     """
     try:
         # Verifica se produto existe antes de buscar histórico
-        product = Product.query.get(id)
+        product = db.session.get(Product, id)
         if not product:
             abort(404, description="Produto não encontrado")
 
