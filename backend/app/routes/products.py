@@ -1,8 +1,13 @@
-from flask import Blueprint, jsonify, abort
+from flask import Blueprint, jsonify, abort, make_response
 from app.models.product import Product, PriceHistory
 from sqlalchemy.exc import SQLAlchemyError
 from app.database.connection import db
 from app import cache
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
 
 products_bp = Blueprint('products', __name__)
 
@@ -25,7 +30,7 @@ def serialize_price_history(history):
     }
 
 @products_bp.route('/products', methods=['GET'])
-@cache.cached(timeout=60)
+@cache.cached(timeout=0)  # Disable caching for this endpoint
 def get_products():
     """
     Retorna a lista de produtos cadastrados.
@@ -37,10 +42,17 @@ def get_products():
         description: Lista de produtos.
     """
     try:
+        logger.debug("Fetching products from database")
         products = Product.query.all()
         serialized = [serialize_product(p) for p in products]
-        return jsonify(serialized), 200
+        logger.info(f"Returning {len(serialized)} products")
+        response = make_response(jsonify(serialized), 200)
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        return response
     except SQLAlchemyError as e:
+        logger.error(f"Database error fetching products: {str(e)}")
         return jsonify({'error': 'Erro ao buscar produtos', 'details': str(e)}), 500
 
 @products_bp.route('/products/<int:id>', methods=['GET'])
@@ -90,7 +102,6 @@ def get_product_history(id):
         description: Produto não encontrado.
     """
     try:
-        # Verifica se produto existe antes de buscar histórico
         product = db.session.get(Product, id)
         if not product:
             abort(404, description="Produto não encontrado")

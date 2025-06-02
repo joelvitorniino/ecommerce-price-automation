@@ -1,9 +1,16 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, make_response
 from app.services.price_automation import price_automation
+from app import cache
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
 
 automation_bp = Blueprint('automation', __name__, url_prefix='/automation')
 
 @automation_bp.route('/start', methods=['POST'])
+@cache.cached(timeout=0)  # Disable caching
 def start():
     """
     Inicia a automação de preços.
@@ -44,14 +51,27 @@ def start():
                   type: string
     """
     try:
+        logger.debug("Attempting to start price automation")
         if price_automation.start():
-            return jsonify({'message': 'Automation started.'}), 200
+            response = make_response(jsonify({'message': 'Automation started.'}), 200)
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+            logger.info("Price automation started successfully")
+            return response
         else:
-            return jsonify({'message': 'Automation is already running.'}), 400
+            response = make_response(jsonify({'message': 'Automation is already running.'}), 400)
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+            logger.warning("Price automation already running")
+            return response
     except Exception as e:
+        logger.error(f"Failed to start automation: {str(e)}")
         return jsonify({'error': 'Failed to start automation', 'details': str(e)}), 500
 
 @automation_bp.route('/stop', methods=['POST'])
+@cache.cached(timeout=0)  # Disable caching
 def stop():
     """
     Para a automação de preços.
@@ -92,14 +112,27 @@ def stop():
                   type: string
     """
     try:
+        logger.debug("Attempting to stop price automation")
         if price_automation.stop():
-            return jsonify({'message': 'Automation stopped.'}), 200
+            response = make_response(jsonify({'message': 'Automation stopped.'}), 200)
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+            logger.info("Price automation stopped successfully")
+            return response
         else:
-            return jsonify({'message': 'Automation was not running.'}), 400
+            response = make_response(jsonify({'message': 'Automation was not running.'}), 400)
+            response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+            response.headers['Pragma'] = 'no-cache'
+            response.headers['Expires'] = '0'
+            logger.warning("Price automation was not running")
+            return response
     except Exception as e:
+        logger.error(f"Failed to stop automation: {str(e)}")
         return jsonify({'error': 'Failed to stop automation', 'details': str(e)}), 500
 
 @automation_bp.route('/status', methods=['GET'])
+@cache.cached(timeout=0)  # Disable caching
 def status():
     """
     Retorna o status da automação de preços.
@@ -117,6 +150,27 @@ def status():
                 automation_active:
                   type: boolean
                   example: true
+                last_update:
+                  type: string
+                  example: "2025-06-01T22:12:34.123Z"
+                update_count:
+                  type: integer
+                  example: 10
+                error_count:
+                  type: integer
+                  example: 0
+                interval:
+                  type: number
+                  example: 10
+                price_range:
+                  type: object
+                  properties:
+                    min_factor:
+                      type: number
+                      example: 0.8
+                    max_factor:
+                      type: number
+                      example: 1.2
       500:
         description: Erro ao tentar obter o status da automação.
         content:
@@ -130,7 +184,14 @@ def status():
                   type: string
     """
     try:
-        status = price_automation.is_running()
-        return jsonify({'automation_active': status}), 200
+        logger.debug("Fetching price automation status")
+        status = price_automation.get_status()
+        response = make_response(jsonify(status), 200)
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+        logger.info(f"Automation status: {status}")
+        return response
     except Exception as e:
+        logger.error(f"Failed to get automation status: {str(e)}")
         return jsonify({'error': 'Failed to get automation status', 'details': str(e)}), 500
