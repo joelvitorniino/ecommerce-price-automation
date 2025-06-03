@@ -1,0 +1,22 @@
+.cart-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.checkout-button {
+  display: inline-block;
+  background: #10B981;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1rem;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.checkout-button:hover {
+  background: #059669;
+}

@@ -1,0 +1,133 @@
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  position: relative;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.9rem;
+  color: #4B5563;
+  margin: 20px 0;
+  justify-content: center;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-indicator.online {
+  background: #10B981;
+}
+
+.status-indicator.offline {
+  background: #EF4444;
+}
+
+.price-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(243, 244, 246, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  border-radius: 8px;
+}
+
+.price-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1E3A8A;
+  background: #fff;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.price-loading .spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid #D1D5DB;
+  border-top: 3px solid #1E3A8A;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error {
+  text-align: center;
+  padding: 20px;
+}
+
+.error p {
+  font-family: 'Open Sans', sans-serif;
+  color: #EF4444;
+  margin-bottom: 20px;
+}
+
+.error button {
+  background: #1E3A8A;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.error button:hover {
+  background: #1E40AF;
+}
+
+@media (max-width: 768px) {
+  .connection-status {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .price-loading-overlay {
+    padding: 10px;
+  }
+
+  .price-loading {
+    font-size: 0.9rem;
+    padding: 10px 15px;
+  }
+
+  .price-loading .spinner {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Custom styles for react-toastify */
+.custom-toast {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  color: #1E3A8A;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 15px;
+}
+
+.custom-toast .Toastify__progress-bar {
+  background: #10B981;
+}

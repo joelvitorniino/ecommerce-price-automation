@@ -1,0 +1,103 @@
+.price-monitor {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 500px;
+  font-family: 'Open Sans', sans-serif;
+  text-align: center;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #4B5563;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-indicator.online {
+  background: #10B981;
+}
+
+.status-indicator.offline {
+  background: #EF4444;
+}
+
+.status-indicator.running {
+  background: #10B981;
+}
+
+.status-indicator.stopped {
+  background: #EF4444;
+}
+
+.error {
+  color: #EF4444;
+  font-size: 0.8rem;
+  margin-bottom: 10px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.controls button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.controls button:first-child {
+  background: #1E3A8A;
+  color: white;
+}
+
+.controls button:first-child:hover:not(:disabled) {
+  background: #1E40AF;
+}
+
+.controls button:last-child {
+  background: #EF4444;
+  color: white;
+}
+
+.controls button:last-child:hover:not(:disabled) {
+  background: #DC2626;
+}
+
+.controls button:disabled {
+  background: #D1D5DB;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .price-monitor {
+    padding: 15px;
+    margin: 15px;
+  }
+
+  .status {
+    font-size: 0.8rem;
+  }
+
+  .controls button {
+    padding: 8px 15px;
+    font-size: 0.8rem;
+  }
+}
