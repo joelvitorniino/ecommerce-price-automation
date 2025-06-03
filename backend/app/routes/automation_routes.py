@@ -1,6 +1,5 @@
-from flask import Blueprint, jsonify, make_response
-from app.services.price_automation import price_automation
-from app import cache
+from flask import Blueprint, jsonify, make_response, current_app
+from flask_caching import Cache
 import logging
 
 # Configure logging
@@ -10,7 +9,6 @@ logger = logging.getLogger(__name__)
 automation_bp = Blueprint('automation', __name__, url_prefix='/automation')
 
 @automation_bp.route('/start', methods=['POST'])
-@cache.cached(timeout=0)  # Disable caching
 def start():
     """
     Inicia a automação de preços.
@@ -52,7 +50,7 @@ def start():
     """
     try:
         logger.debug("Attempting to start price automation")
-        if price_automation.start():
+        if current_app.price_automation.start():
             response = make_response(jsonify({'message': 'Automation started.'}), 200)
             response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
             response.headers['Pragma'] = 'no-cache'
@@ -71,7 +69,6 @@ def start():
         return jsonify({'error': 'Failed to start automation', 'details': str(e)}), 500
 
 @automation_bp.route('/stop', methods=['POST'])
-@cache.cached(timeout=0)  # Disable caching
 def stop():
     """
     Para a automação de preços.
@@ -113,7 +110,7 @@ def stop():
     """
     try:
         logger.debug("Attempting to stop price automation")
-        if price_automation.stop():
+        if current_app.price_automation.stop():
             response = make_response(jsonify({'message': 'Automation stopped.'}), 200)
             response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
             response.headers['Pragma'] = 'no-cache'
@@ -132,7 +129,6 @@ def stop():
         return jsonify({'error': 'Failed to stop automation', 'details': str(e)}), 500
 
 @automation_bp.route('/status', methods=['GET'])
-@cache.cached(timeout=0)  # Disable caching
 def status():
     """
     Retorna o status da automação de preços.
@@ -185,7 +181,7 @@ def status():
     """
     try:
         logger.debug("Fetching price automation status")
-        status = price_automation.get_status()
+        status = current_app.price_automation.get_status()
         response = make_response(jsonify(status), 200)
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
         response.headers['Pragma'] = 'no-cache'

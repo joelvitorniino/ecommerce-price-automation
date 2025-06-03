@@ -12,7 +12,7 @@ class Product(db.Model):
     original_price = db.Column(db.Float, nullable=False)
     current_price = db.Column(db.Float, nullable=False)
     category = db.Column(db.String(50), index=True)
-    image_url = db.Column(db.String(255), default='https://picsum.photos/300/200')
+    image = db.Column(db.String(255), default='https://picsum.photos/300/200')
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
     
@@ -30,8 +30,8 @@ class Product(db.Model):
             raise ValueError(f"{key} cannot be negative")
         return value
 
-    @validates('image_url')
-    def validate_image_url(self, key, value):
+    @validates('image')
+    def validate_image(self, key, value):
         if value and len(value) > 255:
             raise ValueError("Image URL is too long")
         return value or 'https://picsum.photos/300/200'
@@ -44,7 +44,7 @@ class Product(db.Model):
             'original_price': self.original_price,
             'current_price': self.current_price,
             'category': self.category,
-            'image_url': self.image_url,
+            'image': self.image,
             'created_at': self.created_at.isoformat(),
             'updated_at': self.updated_at.isoformat(),
             'last_update': self.updated_at.isoformat()

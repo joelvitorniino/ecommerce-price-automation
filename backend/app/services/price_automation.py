@@ -38,29 +38,70 @@ class PriceAutomation:
                         logger.debug("Starting price update cycle")
                         products = Product.query.all()
                         price_histories = []
+                        updated_products = 0
+
                         for product in products:
-                            new_price = round(
-                                product.original_price * random.uniform(self.min_price_factor, self.max_price_factor), 
-                                2
-                            )
-                            if new_price < 0:
-                                new_price = 0.0
-                            logger.debug(f"Updating {product.name}: original={product.original_price}, new={new_price}")
+                            # Pular produtos com preço original inválido
+                            if product.original_price <= 0:
+                                logger.debug(f"Skipping product {product.id} with original_price <= 0")
+                                continue
+                            
+                            # Calcular limites
+                            min_price = round(product.original_price * self.min_price_factor, 2)
+                            max_price = round(product.original_price * self.max_price_factor, 2)
+                            
+                            # Garantir min <= max
+                            if min_price > max_price:
+                                min_price, max_price = max_price, min_price
+                            
+                            # Pular se não houver variação possível
+                            if min_price == max_price:
+                                logger.debug(f"Skipping product {product.id} because min_price == max_price")
+                                continue
+                            
+                            # Usar gerador criptográfico para maior aleatoriedade
+                            secure_random = random.SystemRandom()
+                            new_price = None
+                            max_attempts = 100
+                            
+                            # Tentar gerar preço diferente do atual
+                            for _ in range(max_attempts):
+                                candidate = round(secure_random.uniform(min_price, max_price), 2)
+                                if candidate != product.current_price:
+                                    new_price = candidate
+                                    break
+                            
+                            # Fallback estratégico se ainda for igual
+                            if new_price is None or new_price == product.current_price:
+                                # Escolher o limite oposto ao preço atual
+                                if product.current_price == min_price:
+                                    new_price = max_price
+                                else:
+                                    new_price = min_price
+                                logger.debug(f"Used fallback pricing for product {product.id}")
+                            
+                            # Atualizar produto
+                            logger.debug(f"Updating product {product.id}: current={product.current_price}, new={new_price}, original={product.original_price}")
                             product.current_price = new_price
                             product.updated_at = datetime.now(timezone.utc)
-
+                                                        
                             history = PriceHistory(
                                 product_id=product.id,
                                 price=new_price,
                                 timestamp=datetime.now(timezone.utc)
                             )
                             price_histories.append(history)
+                            updated_products += 1
+                            
 
-                        db.session.bulk_save_objects(price_histories)
-                        db.session.commit()
-                        self._last_update = datetime.now(timezone.utc)
-                        self._update_count += 1
-                        logger.info(f"Prices updated for {len(products)} products at {self._last_update.isoformat()}")
+                        if updated_products > 0:
+                            db.session.bulk_save_objects(price_histories)
+                            db.session.commit()
+                            self._last_update = datetime.now(timezone.utc)
+                            self._update_count += 1
+                            logger.info(f"Prices updated for {updated_products}/{len(products)} products at {self._last_update.isoformat()}")
+                        else:
+                            logger.info(f"No products found to update at {datetime.now(timezone.utc).isoformat()}")
 
                 except SQLAlchemyError as e:
                     db.session.rollback()
@@ -71,6 +112,7 @@ class PriceAutomation:
                     self._error_count += 1
                     logger.error(f"Unexpected error updating prices: {str(e)}")
 
+            # Aguarda o intervalo antes da próxima iteração
             self._stop_event.wait(self.interval)
 
     def start(self) -> bool:
@@ -107,7 +149,7 @@ class PriceAutomation:
             "interval": self.interval,
             "price_range": {
                 "min_factor": self.min_price_factor,
-                "max_factor": self.max_factor
+                "max_factor": self.max_price_factor
             }
         }
 
@@ -128,7 +170,7 @@ class PriceAutomation:
             else:
                 logger.error("Invalid price range: min_factor must be non-negative and <= max_factor.")
 
-# Singleton instance
+# Instância singleton
 price_automation: Optional[PriceAutomation] = None
 
 def init_price_automation(app: Flask, interval: float = 10, min_price_factor: float = 0.8, max_price_factor: float = 1.2) -> PriceAutomation:

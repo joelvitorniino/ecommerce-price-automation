@@ -64,12 +64,11 @@ def create_app():
     app.register_blueprint(products_bp)
     app.register_blueprint(automation_bp)
     
-    # Inicialização da automação de preços
+    # Inicialização da automação de preços (sem iniciar automaticamente)
     from app.services.price_automation import init_price_automation
     with app.app_context():
-        price_automation = init_price_automation(app, interval=10, min_price_factor=0.8, max_price_factor=1.2)
-        price_automation.start()
-        logger.info("Price automation initialized and started")
+        app.price_automation = init_price_automation(app, interval=10, min_price_factor=0.8, max_price_factor=1.2)
+        logger.info("Price automation initialized but not started")
 
     # Registro dos comandos CLI personalizados
     from app.commands import register_commands

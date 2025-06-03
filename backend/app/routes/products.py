@@ -19,7 +19,7 @@ def serialize_product(product):
         'originalPrice': product.original_price,
         'currentPrice': product.current_price,
         'category': product.category,
-        'imageUrl': product.image_url,
+        'image': product.image,
         'lastUpdate': product.updated_at.isoformat() if product.updated_at else None
     }
 
