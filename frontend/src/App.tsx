@@ -7,12 +7,12 @@ import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import Confirmation from './components/Confirmation';
 import Toast from './components/Toast';
-import type { CartItem } from './types';
+import type { CartItem, Product } from './types';
 import './styles.css';
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: any) => void;
+  addToCart: (product: Product) => void;
   updateQuantity: (id: string, quantity: number) => void;
   removeFromCart: (id: string) => void;
   clearCart: () => void;
@@ -45,7 +45,7 @@ const App: React.FC = () => {
     localStorage.setItem('cart', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product: any) => {
+  const addToCart = (product: Product) => {
     setCart((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {

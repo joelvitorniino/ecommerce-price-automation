@@ -19,7 +19,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   return (
     <div className="product-card">
       <div className="product-image-container">
-        <img src={product.imageUrl} alt={product.name} className="product-image" />
+        <img src={product.image} alt={product.name} className="product-image" />
       </div>
       <div className="product-details">
         <h3>{product.name}</h3>

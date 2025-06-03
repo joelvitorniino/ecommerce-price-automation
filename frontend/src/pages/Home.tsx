@@ -29,12 +29,15 @@ const Home: React.FC = () => {
     }
   }, [initialLoading, error]);
 
-  if (error) return (
+  if (error && products.length === 0) {
+  return (
     <div className="error">
       <p>{error}</p>
       <button onClick={refetch}>Retry</button>
     </div>
   );
+}
+
 
   return (
     <div className="home-container">
