@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { toast } from 'react-toastify';
 import { useProducts } from '../hooks/useProducts';
 import { usePriceUpdates } from '../hooks/usePriceUpdates';
-import ProductList from '../components/ProductList';
-import PriceMonitor from '../components/PriceMonitor';
 import './css/Home.css';
+
+// Lazy load dos componentes
+const ProductList = lazy(() => import('../components/ProductList'));
+const PriceMonitor = lazy(() => import('../components/PriceMonitor'));
 
 const Home: React.FC = () => {
   const { products, loading: initialLoading, error, refetch } = useProducts();
@@ -30,18 +32,19 @@ const Home: React.FC = () => {
   }, [initialLoading, error]);
 
   if (error && products.length === 0) {
-  return (
-    <div className="error">
-      <p>{error}</p>
-      <button onClick={refetch}>Retry</button>
-    </div>
-  );
-}
-
+    return (
+      <div className="error">
+        <p>{error}</p>
+        <button onClick={refetch}>Retry</button>
+      </div>
+    );
+  }
 
   return (
     <div className="home-container">
-      <PriceMonitor />
+      <Suspense fallback={<div>Loading price monitor...</div>}>
+        <PriceMonitor />
+      </Suspense>
       <div className="connection-status">
         <span className={`status-indicator ${isConnected ? 'online' : 'offline'}`}></span>
         <span>{isConnected ? 'Connected to server' : 'Disconnected - showing cached data'}</span>
@@ -54,7 +57,9 @@ const Home: React.FC = () => {
           </div>
         </div>
       )}
-      <ProductList products={updatedProducts} />
+      <Suspense fallback={<div>Loading products...</div>}>
+        <ProductList products={updatedProducts} />
+      </Suspense>
     </div>
   );
 };
