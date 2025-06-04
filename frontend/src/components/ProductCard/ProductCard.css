@@ -15,13 +15,23 @@
   width: 100%;
   height: 200px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   border-bottom: 1px solid #F3F4F6;
+  transition: opacity 0.3s ease;
+}
+
+@media (max-width: 480px) {
+  .product-image-container {
+    height: 180px;
+  }
 }
 
 .product-details {
