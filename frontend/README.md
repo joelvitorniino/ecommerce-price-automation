@@ -1,54 +1,86 @@
-# React + TypeScript + Vite
+# Aplicação React com Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este é um projeto simples criado com [Vite](https://vitejs.dev/) e [React](https://react.dev/). Ele serve como base para construir aplicações web modernas e performáticas.
 
-Currently, two official plugins are available:
+## Pré-requisitos
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Antes de começar, certifique-se de ter instalado:
 
-## Expanding the ESLint configuration
+- [Node.js](https://nodejs.org/) (versão 18 ou superior)
+- [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/) (gerenciadores de pacotes)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Instalação
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Clone este repositório:
+
+   ```bash
+   git clone https://github.com/joelvitorniino/ecommerce-price-automation
+   ```
+
+2. Navegue até o diretório do projeto:
+
+   ```bash
+   cd frontend
+   ```
+
+3. Instale as dependências:
+
+   ```bash
+   npm install
+   ```
+
+   Ou, se estiver usando Yarn:
+
+   ```bash
+   yarn
+   ```
+
+## Rodando a aplicação
+
+Para iniciar o servidor de desenvolvimento:
+
+```bash
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Ou, com Yarn:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+yarn dev
 ```
+
+A aplicação estará disponível em `http://localhost:5173` (ou outra porta, caso a padrão esteja em uso).
+
+## Construindo para produção
+
+Para gerar uma versão otimizada para produção:
+
+```bash
+npm run build
+```
+
+Ou, com Yarn:
+
+```bash
+yarn build
+```
+
+Os arquivos gerados estarão na pasta `dist`.
+
+## Visualizando a build
+
+Para visualizar a build localmente:
+
+```bash
+npm run preview
+```
+
+Ou, com Yarn:
+
+```bash
+yarn preview
+```
+
+## Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
