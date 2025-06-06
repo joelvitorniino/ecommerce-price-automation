@@ -3,3 +3,4 @@ SQLAlchemy
 pytest
 python-dotenv
 flask-cors
+flasgger
