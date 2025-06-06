@@ -2,7 +2,7 @@ import type { Product } from '../types';
 
 export const fetchProducts = async (): Promise<Product[]> => {
   console.log('Fetching products from API at', new Date().toISOString());
-  const response = await fetch('http://localhost:8000/products', {
+  const response = await fetch('https://ecommerce-price-automation.onrender.com/products', {
     headers: {
       'Cache-Control': 'no-cache',
       'Pragma': 'no-cache',
@@ -27,7 +27,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
 };
 
 export const startAutomation = async (): Promise<void> => {
-  const response = await fetch('http://localhost:8000/automation/start', {
+  const response = await fetch('https://ecommerce-price-automation.onrender.com/automation/start', {
     method: 'POST',
     headers: {
       'Cache-Control': 'no-cache',
@@ -41,7 +41,7 @@ export const startAutomation = async (): Promise<void> => {
 };
 
 export const stopAutomation = async (): Promise<void> => {
-  const response = await fetch('http://localhost:8000/automation/stop', {
+  const response = await fetch('https://ecommerce-price-automation.onrender.com/automation/stop', {
     method: 'POST',
     headers: {
       'Cache-Control': 'no-cache',
@@ -62,7 +62,7 @@ export const getAutomationStatus = async (): Promise<{
   interval: number;
   price_range: { min_factor: number; max_factor: number };
 }> => {
-  const response = await fetch('http://localhost:8000/automation/status', {
+  const response = await fetch('https://ecommerce-price-automation.onrender.com/automation/status', {
     headers: {
       'Cache-Control': 'no-cache',
       'Pragma': 'no-cache',
