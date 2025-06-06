@@ -6,3 +6,4 @@ flask-cors
 flasgger
 Flask-Caching 
 Flask-SQLAlchemy
+redis
