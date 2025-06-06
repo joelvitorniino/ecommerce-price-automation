@@ -4,3 +4,4 @@ pytest
 python-dotenv
 flask-cors
 flasgger
+Flask-Caching 
